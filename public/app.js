@@ -34,23 +34,23 @@
     session.pc = pc;
     return navigator.mediaDevices.getUserMedia(options)
     .then((avStream) => {
-      console.log('Setting up users webcam before peer answers')
+      console.log('Setting up users webcam before peer answers');
       let videoL = document.getElementById('video-display-L');
       videoL.srcObject = avStream;
-      videoL.onloadedmetadata = function(e) {
+      videoL.onloadedmetadata = (e) => {
         videoL.play();
-      }
-      console.log('Add stream to peer connection')
+      };
+      console.log('Add stream to peer connection');
       pc.addStream(avStream);
     })
-    .catch(function(err) {
+    .catch((err) => {
       console.log(err.name + ': ' + err.message);
     });
-  }
+  };
 
   // Create a listener callback
   const listenerCb = (from, command, info) => {
-    switch(command) {
+    switch (command) {
       case 'CALL_REQUEST':
         startConnection(from);
         console.log('Receiving call from ' + from);
@@ -58,16 +58,16 @@
         break;
 
       case 'CALL_ACCEPT':
-        console.log('Setting up connection' )
+        console.log('Setting up connection');
         startConnection(from)
-        .then( () => {
+        .then(() => {
           // Get connection data
           session.pc.createOffer().then((offer) => {
-            console.log('Store offer')
+            console.log('Store offer');
             session.pc.setLocalDescription(offer);
-            console.log('Sending offer to ' + from)
+            console.log('Sending offer to ' + from);
             send(from, 'OFFER', offer);
-          })
+          });
         });
         break;
 
@@ -141,8 +141,8 @@
     const url = `https://192.168.2.13:3000/send/${myname}/${toname}`;
     request.post(url, data, (err, response) => {
       (response === 'success') ? console.log(response) : alert(response);
-    })
-  }
+    });
+  };
 
   poll(myname);
   setInterval(() => {
@@ -155,7 +155,7 @@
     button.addEventListener('click', () => {
       let to = document.getElementById('dropdown').value;
       send(to, 'CALL_REQUEST');
-    })
-  })
+    });
+  });
 
 })();
