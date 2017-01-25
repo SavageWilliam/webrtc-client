@@ -1,6 +1,7 @@
 const https = require('https');
 const fs = require('fs');
-const path = require('path');
+const handler = require('./src/handler.js');
+const port = process.env.PORT || 3000;
 
 const options = {
   key: fs.readFileSync('keys/key.pem'),
@@ -29,6 +30,7 @@ const handler = (req, res) => {
     });
   }
 }
+
 
 const server = https.createServer(options, handler);
 
