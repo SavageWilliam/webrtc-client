@@ -119,26 +119,33 @@
     let url = `https://192.168.2.13:3000/poll/${myname}`;
     request.get(url, (err, response) => {
       if(err) console.log(err, 'error with poll request');
-      //response object (data) looks like... '{ directory: ['john', 'emily'], messages: [ {from: 'user', data: data.payload } ] }'
-      // data = payload.data = { command: "CALL_REQUEST", info: offer  }
       response = JSON.parse(response);
+      // Manage Contacts
       contacts = response.directory;
-
+      console.log(`Your contacts: ${contacts}`);
+      const dropdown = document.getElementById('dropdown');
+      while (drop.hasChildNodes()) {
+      dropdown.removeChild(dropdown.lastChild);
+      }
+      contacts.forEach( (contact) => {
+        let option = document.createElement('OPTION');
+        option.value = contact;
+        option.innerText = contact;
+        dropdown.appendChilld(option);
+      })
+      // Manage Messages
       let messages = response.messages;
-      console.log(messages, "COMAND IN MESSAGE");
-
+      console.log(`Your messages: ${messages}`);
       if(messages.length === 0) {
         return;
       }
-      // iterate through the messages.. for each
       messages.forEach( ({from, data}) => {
         data = JSON.parse(data);
-        console.log(data, "DATA in for each...");
         let command  = data.command;
         let info = data.info;
-        console.log(command, "COMMAND IN MESSAGE");
+        console.log(`Processing ${command} from ${from}`);
         listenerCb(from, command, info)
-        console.log(`Processed ${command} from ${from}`);
+
       })
     })
   }
