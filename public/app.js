@@ -67,7 +67,6 @@
         break;
 
       case 'CALL_ACCEPT':
-        // Set own connection after user has called me
         console.log('Setting up connection' )
         startConnection(from)
         .then( () => {
@@ -76,11 +75,9 @@
             console.log('Store offer')
             session.pc.setLocalDescription(offer);
             console.log('Sending offer to ' + from)
-            send(from, 'OFFER', offer); //reminder that offer here is the offer object
+            send(from, 'OFFER', offer);
           })
         });
-
-        // 2) pc.createOffer. making a call 'OFFER' - sending json offer object
         break;
 
       case 'OFFER':
@@ -95,14 +92,12 @@
         break;
 
       case 'ANSWER':
-      // Set remote description
         console.log('Received answer from ' + from + ' and storing it')
         session.pc.setRemoteDescription(new RTCSessionDescription(info))
         break;
 
       case 'CANDIDATE':
         console.log('.....Candidate identified.....');
-
         console.log('.....Adding ice candidate.....');
         session.pc.addIceCandidate(new RTCIceCandidate(info));
         break;
@@ -118,7 +113,7 @@
   const poll = () => {
     let url = `https://192.168.2.13:3000/poll/${myname}`;
     request.get(url, (err, response) => {
-      if(err) console.log(err, 'error with poll request');
+      if(err) console.log(`error with poll request: ${err}`);
       response = JSON.parse(response);
       // Manage Contacts
       contacts = response.directory;
@@ -168,11 +163,7 @@
   const callBtns = document.querySelectorAll('.call-btn');
   Array.prototype.forEach.call(callBtns, (button) => {
     button.addEventListener('click', () => {
-      // Get parents userId
-      //let from = button.parentElement.getAttribute('id');
-      // Get select menu value
       let to = document.getElementById('dropdown').value;
-      // Send call request to signalling channel
       send(to, 'CALL_REQUEST');
     })
   })
